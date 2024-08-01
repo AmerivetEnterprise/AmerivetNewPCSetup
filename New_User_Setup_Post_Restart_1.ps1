@@ -1,4 +1,6 @@
-﻿#New User Script #2 Run this after restart - Computer Setup Automation
+#Version 5.0 
+#08/01/2024
+#New User Script #2 Run this after restart - Computer Setup Automation
 
 $host.UI.RawUI.WindowTitle = "New User Setup Post Restart 1"
 
@@ -303,16 +305,19 @@ $InstalledPrograms | ForEach {
 
 ############################################################################################
 
-#Removes HP Documentation
-start-process -wait "cmd.exe" "/c C:/IT/Doc_uninstall.cmd"
-Write-Host "HP Documentation Removed"
+#Remove HP Connection Optmizer 
+Start-Process -FilePath "C:\Program Files (x86)\InstallShield Installation Information\{6468C4A5-E47E-405F-B675-A70A70983EA6}\setup.exe" -ArgumentList "-runfromtemp", "-l0x0409", "-removeonly", "/passive" -NoNewWindow -Wait
 
-#Removes HP Connection Optimizer - Find way to make silent
-start-process -wait "cmd.exe" "/c C:/IT/HP ConnectionOptimizerRemover.bat"
-Write-Host "HP Connection Optimizer Removed"
+#HP doc uninstall 
+# Remove registry key
+Remove-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\HP_Documentation" -Force
 
-#Removeing Update User
-Remove-LocalUser -Name "Update" -ErrorAction SilentlyContinue
+# Remove shortcuts
+Remove-Item -Path "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\HP Documentation.lnk" -Force -ErrorAction SilentlyContinue
+Remove-Item -Path "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\HP\HP Documentation.lnk" -Force -ErrorAction SilentlyContinue
+
+# Remove directory
+Remove-Item -Path "C:\Program Files\HP\Documentation" -Recurse -Force -ErrorAction SilentlyContinue
 
 #############################################################################################
 

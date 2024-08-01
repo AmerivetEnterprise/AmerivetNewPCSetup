@@ -1,4 +1,4 @@
-#Version 5.0 
+﻿#Version 5.0 
 #08/01/2024
 #New User Script #2 Run this after restart - Computer Setup Automation
 

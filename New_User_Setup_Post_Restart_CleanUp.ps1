@@ -11,6 +11,7 @@ Remove-Item -Path "C:\IT\New_User_Setup_Post_Restart_2.ps1" -Force
 Remove-Item -Path "C:\IT\New_User_Setup_Post_Restart_3.ps1" -Force
 Remove-Item -Path "C:\IT\New_User_Setup_Post_Restart_4.ps1" -Force
 Remove-Item -Path "C:\IT\New_User_Setup_Post_Restart_5.ps1" -Force
+Remove-Item -Path "C:\IT\FalconCID.txt" -Force
 
 Write-Host "Script Cleanup Complete" -foregroundcolor "Green"
 

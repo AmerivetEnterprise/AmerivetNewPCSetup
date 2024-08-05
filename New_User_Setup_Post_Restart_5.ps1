@@ -12,9 +12,20 @@ set-itemproperty $RunOnceKey "NextRun" ('C:\Windows\System32\WindowsPowerShell\v
 
 ###############################################################################################################################################################################################
 
+# Assume $base64String contains your Base64 encoded string
+$base64String = "RDA1NzBBNzNENkMzNENBQjhBQzlDQTU1MjA2QTM4N0UtMUE="
+
+# Convert Base64 string to byte array
+$byteArray = [System.Convert]::FromBase64String($base64String)
+
+# Convert byte array to plain text
+$CID = [System.Text.Encoding]::UTF8.GetString($byteArray)
+
+###############################################################################################################################################################################################
+
 #Installs CrowdStrike Falcon Sensor
 Write-Host "Downloading and Installing CrowdStrike Falcon Sensor"
-Invoke-WebRequest -Uri 'https://0372907669agents.s3.us-east-2.amazonaws.com/WindowsSensor.MaverickGyr.exe' -OutFile "$env:TEMP/WindowsSensor.MaverickGyr.exe"#; Start-Process -FilePath "$env:TEMP/WindowsSensor.MaverickGyr.exe" -ArgumentList '/install /quiet /norestart CID=_CID_HERE_' -Wait
+Invoke-WebRequest -Uri 'https://0372907669agents.s3.us-east-2.amazonaws.com/WindowsSensor.MaverickGyr.exe' -OutFile "$env:TEMP/WindowsSensor.MaverickGyr.exe"; Start-Process -FilePath "$env:TEMP/WindowsSensor.MaverickGyr.exe" -ArgumentList "/install /quiet /norestart CID=$CID" -Wait
 Write-host ''
 Write-Host "CrowdStrike Falcon Sensor Installed Successfully" -ForegroundColor Green
 Write-host ''

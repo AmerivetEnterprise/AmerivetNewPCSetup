@@ -14,7 +14,7 @@ set-itemproperty $RunOnceKey "NextRun" ('C:\Windows\System32\WindowsPowerShell\v
 
 #Installs CrowdStrike Falcon Sensor
 Write-Host "Downloading and Installing CrowdStrike Falcon Sensor"
-Invoke-WebRequest -Uri 'https://0372907669agents.s3.us-east-2.amazonaws.com/WindowsSensor.MaverickGyr.exe' -OutFile "$env:TEMP/WindowsSensor.MaverickGyr.exe"; Start-Process -FilePath "$env:TEMP/WindowsSensor.MaverickGyr.exe" -ArgumentList '/install /quiet /norestart CID=D0570A73D6C34CAB8AC9CA55206A387E-1A' -Wait
+Invoke-WebRequest -Uri 'https://0372907669agents.s3.us-east-2.amazonaws.com/WindowsSensor.MaverickGyr.exe' -OutFile "$env:TEMP/WindowsSensor.MaverickGyr.exe"#; Start-Process -FilePath "$env:TEMP/WindowsSensor.MaverickGyr.exe" -ArgumentList '/install /quiet /norestart CID=_CID_HERE_' -Wait
 Write-host ''
 Write-Host "CrowdStrike Falcon Sensor Installed Successfully" -ForegroundColor Green
 Write-host ''

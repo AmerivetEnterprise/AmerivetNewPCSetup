@@ -106,6 +106,7 @@ Read-host 'Info.csv is missing, place in C:\IT before continuing '
 #############################################################################################
 
 #Starts New Employee Inventory Update Flow via HTTP Request
+# https://make.powerautomate.com/environments/Default-c0456220-7d8e-4458-b009-91d710a877d4/flows/shared/d78b6bf4-29f8-4dfd-802a-1550e1ad3d2f/details?v3=false
 $PA_URL = "$PA_URL_PCInfo"
 
 $Result = @{

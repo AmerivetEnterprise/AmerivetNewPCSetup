@@ -141,6 +141,9 @@ Write-Host "ScreenConnect Amerivet Installed"
 Start-Process msiexec.exe -wait -ArgumentList '/I C:\IT\UI_Desktop.msi'
 Write-Host "UI Desktop Installed"
 
+#Installs Datto for Corp Site
+#Start-process "C:\IT\DattoAgentInstaller.exe"
+
 #Set Power Settings 
 Powercfg /Change -monitor-timeout-ac 60
 Powercfg /Change -standby-timeout-ac 0

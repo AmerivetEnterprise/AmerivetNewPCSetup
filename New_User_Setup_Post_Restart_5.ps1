@@ -12,16 +12,6 @@ set-itemproperty $RunOnceKey "NextRun" ('C:\Windows\System32\WindowsPowerShell\v
 
 ###############################################################################################################################################################################################
 
-$FalconCIDFile = "C:\IT\Info.csv"
-if (Test-Path -path $FalconCIDFile)
-{ 
-    #Do Nothing and Continue
-}
-else
-{
-Read-host 'Info.csv is missing, place in C:\IT before continuing' -ForegroundColor Red
-}
-
 # Specify the path to the CSV file
 $csvPath = "C:\IT\Info.csv"
 
@@ -31,7 +21,8 @@ $data = Import-Csv -Path $csvPath
 foreach ($row in $data) {
     # Access each column's data by column name
     $CID = $row.FalconCID
-}
+    $PA_URL_Complete = $row.PA_URL_Complete
+    }
 
 ###############################################################################################################################################################################################
 
@@ -120,8 +111,9 @@ Write-Host ''
 
 Read-Host "Press Enter to remove from New Scripts Group and Send Password Reset Email to user"
 
-#Starts New Employee Inventory Update Flow
-$PA_URL = "https://prod-164.westus.logic.azure.com:443/workflows/7b9c0ef9ccaf49ac9a0914bd563b5fc8/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=oztyW61WYISqt9xomTy2zcJGIHPDtO6Qt7MERCgPO3w"
+# Starts New Hire PC Setup Complete v3 Flow
+# https://make.powerautomate.com/environments/Default-c0456220-7d8e-4458-b009-91d710a877d4/flows/shared/4895a808-04ff-479c-a4ce-758996522c1b/details?v3=false
+$PA_URL = "$PA_URL_Complete"
 $Result = @{
 
 UPN = $UPN

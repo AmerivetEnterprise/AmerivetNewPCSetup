@@ -25,7 +25,16 @@ $OS_Key = $OS_Key.OA3xOriginalProductKey
 
 $UPN = whoami /upn
 
-$UPN
+# Split the email into the username and domain parts
+$parts = $UPN.Split('@')
+$username = $parts[0]
+$domain = $parts[1]
+
+# Split the username on the dot, capitalize each part, then rejoin them
+$capitalizedUsername = ($username.Split('.') | ForEach-Object { $_.Substring(0,1).ToUpper() + $_.Substring(1).ToLower() }) -join '.'
+
+# Reassemble the full email
+$capitalizedUPN = "$capitalizedUsername@$domain"
 
 Write-Host ''
 
@@ -111,7 +120,7 @@ $PA_URL = "$PA_URL_PCInfo"
 
 $Result = @{
 
-UPN = $UPN
+UPN = $capitalizedUPN
 SN = $SN
 Model = $Model
 OS_Key = $OS_Key

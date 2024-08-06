@@ -12,21 +12,26 @@ set-itemproperty $RunOnceKey "NextRun" ('C:\Windows\System32\WindowsPowerShell\v
 
 ###############################################################################################################################################################################################
 
-$FalconCIDFile = "C:\IT\FalconCID.txt"
+$FalconCIDFile = "C:\IT\Info.csv"
 if (Test-Path -path $FalconCIDFile)
 { 
     #Do Nothing and Continue
 }
 else
 {
-Read-host 'Falcon CID txt file missing, place in C:\IT before continuing' -ForegroundColor Red
+Read-host 'Info.csv is missing, place in C:\IT before continuing' -ForegroundColor Red
 }
 
-# Specify the path to the input file
-$inputFilePath = "C:\IT\FalconCID.txt"
+# Specify the path to the CSV file
+$csvPath = "C:\IT\Info.csv"
 
-# Read the content from the input file
-$CID = Get-Content -Path $inputFilePath
+# Import the CSV file into a PowerShell object
+$data = Import-Csv -Path $csvPath
+
+foreach ($row in $data) {
+    # Access each column's data by column name
+    $CID = $row.FalconCID
+}
 
 ###############################################################################################################################################################################################
 

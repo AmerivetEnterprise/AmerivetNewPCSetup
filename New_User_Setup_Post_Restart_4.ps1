@@ -70,21 +70,6 @@ else
 
 ##############################################################################################################################################
 
-#Remove Desktop Shortcuts 
-Remove-Item -Path "C:\Users\Public\Desktop\Busylight for MS Teams.lnk" -Force -ErrorAction SilentlyContinue
-Remove-Item -Path "C:\Users\Public\Desktop\Adobe Acrobat DC.lnk" -Force -ErrorAction SilentlyContinue
-Remove-Item -Path "C:\Users\Public\Desktop\TeamViewer.lnk" -Force -ErrorAction SilentlyContinue
-Remove-Item -Path "C:\Users\Public\Desktop\HP Support Assistant.lnk" -Force -ErrorAction SilentlyContinue
-
-Write-Host "Shortcuts Removed"
-
-#####################################################################################
-
-#Delete Adobe Zip File
-Remove-Item -Path "C:\IT\AmerivetAcrobat.zip" -recurse -Force -Confirm:$false
-
-##############################################################################################################################################
-
 Add-Content -Path C:\IT\Complete.txt -value "`NUSPR_4 - Complete"
 
 #####################################################################################

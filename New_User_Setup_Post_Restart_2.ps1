@@ -173,7 +173,6 @@ if ($HQ_IPs -contains $publicIP) {
 } else {
     Write-Host "Remote Setup Detected"
     $publicIP
-    $sumOfSegments
     Write-Host "Downloading Adobe from OneDrive - This is slow"
     #Location: IT Software\IT Software - Internal Only\New PC Setup Software\Adobe Acrobat\AdobeAcrobat.zip
     Invoke-WebRequest -Uri "https://amerivetusa.sharepoint.com/:u:/s/IT/EfO2m45Pf9FKj3gHBRahY00B4nHQP4WVoOIgjzl17pHhCA?download=1" -OutFile "C:\IT\AmerivetAcrobat.zip"

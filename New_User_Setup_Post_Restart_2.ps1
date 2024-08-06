@@ -76,8 +76,35 @@ $Identifier = "Replacement"
 
 ####################################################################################################################################
 
+
+#Confirms Info.csv file is in place
+$InfoFile = "C:\IT\Info.csv"
+if (Test-Path -path $InfoFile)
+{ 
+Write-host "Info.csv File in place" -ForegroundColor Green
+}
+else
+{
+Write-Host "Location: IT Software\IT Software - Internal Only\New PC Setup Software\Info CSV\Info.csv" -ForegroundColor Yellow
+Read-host 'Info.csv is missing, place in C:\IT before continuing '
+}
+
+    #Import Info CSV
+    $csvPath = "C:\IT\Info.csv"
+    $data = Import-Csv -Path $csvPath
+
+    foreach ($row in $data) {
+    $NAS_IP = $row.IP
+    $NAS_User = $row.Username
+    $NAS_Pw = $row.Password
+    $HQIP1 = $row.HQIP1
+    $HQIP2 = $row.HQIP2
+    $PA_URL_PCInfo  = $row.PA_URL_PCInfo 
+
+#############################################################################################
+
 #Starts New Employee Inventory Update Flow via HTTP Request
-$PA_URL = "https://prod-109.westus.logic.azure.com:443/workflows/9e2e4e2eb0ee4d2b88d250102c7dfc3c/triggers/manual/paths/invoke?api-version=2016-06-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=Ma1EEdqgK3WqLCcib8Ij0QfJgtED-aVWlelsE3QeHHk"
+$PA_URL = "$PA_URL_PCInfo"
 
 $Result = @{
 
@@ -118,18 +145,6 @@ Stop-Process -name "OfficeC2RClient" -Confirm:$false
 
 # Get the public IP address using an external service
 $publicIP = (Invoke-WebRequest -Uri "http://ipinfo.io/ip" -TimeoutSec 10).Content.Trim()
-
-    #Import Info CSV
-    $csvPath = "C:\IT\Info.csv"
-    $data = Import-Csv -Path $csvPath
-
-    foreach ($row in $data) {
-    $NAS_IP = $row.IP
-    $NAS_User = $row.Username
-    $NAS_Pw = $row.Password
-    $HQIP1 = $row.HQIP1
-    $HQIP2 = $row.HQIP2
-    $FalconCID = $row.FalconCID
 
 # Check conditions: 
 $HQ_IPs = "$HQIP1", "$HQIP2"

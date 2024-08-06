@@ -94,23 +94,6 @@ Invoke-WebRequest -Uri $PA_URL -Method POST -ContentType 'application/json' -Bod
 
 #########################################################################
 
-#Downloads and installs Datto 
-#Invoke-WebRequest "__URL__HERE__" -OutFile "$env:TEMP/AgentInstall.exe";start-process "$env:TEMP/AgentInstall.exe"
-
-#Downloads Latest Ubiquiti MSI
-Invoke-WebRequest -Uri "https://download.uid.ui.com/location/api/v1/public/download/latest/?app=UI-DESKTOP-WINDOWS-MSI" -OutFile "C:\IT\UI_Desktop.msi"
-
-#Downloads Latest Logitech Unifying Software
-Invoke-WebRequest -Uri "https://download01.logi.com/web/ftp/pub/techsupport/unifying/unifying252.exe" -OutFile "C:\IT\LogitechUnifyingSoftware.exe"
-
-#Downloads ScreenConnect Amerivet
-$url = "https://amerivet.screenconnect.com/Bin/ScreenConnect.ClientSetup.msi?e=Access&y=Guest&c=0-Corp%20Employee&c=Admin&c=&c=&c=&c=&c=&c="
-$output = "C:\IT\ConnectWiseControl.ClientSetup.Amerivet.msi"
-
-(New-Object System.Net.WebClient).DownloadFile($url, $output)
-
-Write-Host " Amerivet ScreenConnect Downloaded"
-
 #Installs ScreenConnect
 Start-Process msiexec.exe -wait -ArgumentList '/I C:\IT\ConnectWiseControl.ClientSetup.Amerivet.msi /quiet /qn'
 Write-Host "ScreenConnect Amerivet Installed"
@@ -133,36 +116,34 @@ Stop-Process -name "OfficeC2RClient" -Confirm:$false
 #############################################################################################
 # Determines Location On Prem or Remote Setup
 
-# Function to sum segments of the IP address as whole numbers
-function Get-SumOfSegments {
-    param ([string]$ip)
-    $segments = $ip -split '\.' # Split the IP into segments by '.'
-    $sum = 0
-    foreach ($segment in $segments) {
-        $sum += [int]$segment
-    }
-    return $sum
-}
-
 # Get the public IP address using an external service
 $publicIP = (Invoke-WebRequest -Uri "http://ipinfo.io/ip" -TimeoutSec 10).Content.Trim()
 
-# Calculate the sum of all digits in the IP address
-$sumOfSegments = Get-SumOfSegments -ip $publicIP
+    #Import Info CSV
+    $csvPath = "C:\IT\Info.csv"
+    $data = Import-Csv -Path $csvPath
 
-# Check conditions: starts with 12, ends with 126, and sum of digits is 560
-if ($publicIP.StartsWith("12") -and $publicIP.EndsWith("126") -and $sumOfSegments -eq 560) {
+    foreach ($row in $data) {
+    $NAS_IP = $row.IP
+    $NAS_User = $row.Username
+    $NAS_Pw = $row.Password
+    $HQIP1 = $row.HQIP1
+    $HQIP2 = $row.HQIP2
+    $FalconCID = $row.FalconCID
+
+# Check conditions: 
+$HQ_IPs = "$HQIP1", "$HQIP2"
+if ($HQ_IPs -contains $publicIP) {
     Write-Host "On Prem Setup detected"
-    $publicIP
-    $sumOfSegments
+    }    
 
     #Authenticates to OnPrem NAS for Adobe Download
     Write-Host "Mappting to NAS"
-    $NASUser = 'AdobeOnly' #Dont worry these credentials are useless and read only.
-    $NASPass = '4Fyp2Z0T'
+    $NASUser = '$NAS_User'
+    $NASPass = '$NASPass'
     $NASCred = New-Object System.Management.Automation.PsCredential($NASUser,(ConvertTo-SecureString $NASPass -AsPlainText -Force))
 
-    New-PSDrive -Name "A" -Root "\\172.16.0.158\AmerivetNewUser" -Persist -PSProvider "FileSystem" -Credential $NAScred
+    New-PSDrive -Name "A" -Root "\\$NAS_IP\AmerivetNewUser" -Persist -PSProvider "FileSystem" -Credential $NAScred
 
     #############################################################################################
 
@@ -183,11 +164,11 @@ if ($publicIP.StartsWith("12") -and $publicIP.EndsWith("126") -and $sumOfSegment
 
     Write-Host "Downloading Adobe from NAS"
     #Adobe Download 
-    Copy-Item \\172.16.0.158\AmerivetNewUser\NewUserSetup\Software\AmerivetAcrobat.zip -Destination C:\IT\AmerivetAcrobat.zip
+    Copy-Item "\\$NAS_IP\AmerivetNewUser\NewUserSetup\Software\AmerivetAcrobat.zip -Destination C:\IT\AmerivetAcrobat.zip"
 
     Write-Host "Downloading HP Support Assistant from NAS"
     #HP Support Assistant Download 
-    Copy-Item "\\172.16.0.158\AmerivetNewUser\NewUserSetup\Software\HP Support Assistant.exe" -Destination "C:\IT\HP Support Assistant.exe"
+    Copy-Item "\\$NAS_IP\AmerivetNewUser\NewUserSetup\Software\HP Support Assistant.exe" -Destination "C:\IT\HP Support Assistant.exe"
 
 } else {
     Write-Host "Remote Setup Detected"

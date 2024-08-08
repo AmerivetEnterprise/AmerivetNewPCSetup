@@ -106,8 +106,8 @@ Read-host 'Info.csv is missing, place in C:\IT before continuing '
 
     foreach ($row in $data) {
     $NAS_IP = $row.IP
-    $NAS_User = $row.Username
-    $NAS_Pw = $row.Password
+    $NASUser = $row.Username
+    $NASPass = $row.Password
     $HQIP1 = $row.HQIP1
     $HQIP2 = $row.HQIP2
     $PA_URL_PCInfo = $row.PA_URL_PCInfo
@@ -117,7 +117,6 @@ Read-host 'Info.csv is missing, place in C:\IT before continuing '
 
 #Starts New Employee Inventory Update Flow via HTTP Request
 # https://make.powerautomate.com/environments/Default-c0456220-7d8e-4458-b009-91d710a877d4/flows/shared/d78b6bf4-29f8-4dfd-802a-1550e1ad3d2f/details?v3=false
-$PA_URL = "$PA_URL_PCInfo"
 
 $Result = @{
 
@@ -130,7 +129,7 @@ Identifier = $Identifier
 }
 
 #Send Results to PA
-Invoke-WebRequest -Uri "$PA_URL" -Method POST -ContentType 'application/json' -Body ($result | ConvertTo-Json -Compress)
+Invoke-WebRequest -Uri "$PA_URL_PCInfo" -Method POST -ContentType 'application/json' -Body ($result | ConvertTo-Json -Compress)
 
 #########################################################################
 
@@ -170,36 +169,69 @@ if ($HQ_IPs -contains $publicIP) {
     
     #Authenticates to OnPrem NAS for Adobe Download
     Write-Host "Mappting to NAS"
-    $NASUser = '$NAS_User'
-    $NASPass = '$NAS_Pw'
     $NASCred = New-Object System.Management.Automation.PsCredential($NASUser,(ConvertTo-SecureString $NASPass -AsPlainText -Force))
-
-    New-PSDrive -Name "A" -Root "\\$NAS_IP\AmerivetNewUser" -Persist -PSProvider "FileSystem" -Credential $NAScred
-
-    #############################################################################################
-
-    #Progress Tracker for Large Download
-    $waitTimeMilliseconds = 9 * 60 * 1000 #
-
-    # Script to execute in the new PowerShell instance
-    $scriptBlock = {
-    C:\IT\FileSizeTracker.ps1
-    } 
-
-    # Start a new instance of Windows PowerShell and run the script
-    $powershellPath = "$env:windir\system32\windowspowershell\v1.0\powershell.exe"
-    $process = Start-Process $powershellPath -NoNewWindow -ArgumentList ("-ExecutionPolicy Bypass -noninteractive -noprofile " + $scriptBlock) -PassThru
-    #$process.WaitForExit($waitTimeMilliseconds)
-
-    #############################################################################################
-
+    New-PSDrive -Name "A" -Root "\\172.16.0.158\AmerivetNewUser" -Persist -PSProvider "FileSystem" -Credential $NAScred
+    
     Write-Host "Downloading Adobe from NAS"
-    #Adobe Download 
-    Copy-Item "\\$NAS_IP\AmerivetNewUser\NewUserSetup\Software\AmerivetAcrobat.zip -Destination C:\IT\AmerivetAcrobat.zip"
-
     Write-Host "Downloading HP Support Assistant from NAS"
-    #HP Support Assistant Download 
-    Copy-Item "\\$NAS_IP\AmerivetNewUser\NewUserSetup\Software\HP Support Assistant.exe" -Destination "C:\IT\HP Support Assistant.exe"
+
+    ##############################################################################################
+
+    function Copy-FileWithProgress {
+    param(
+        [string]$sourcePath,
+        [string]$destinationPath
+    )
+
+    # Create the destination directory if it doesn't exist
+    $destinationDir = Split-Path -Path $destinationPath -Parent
+    if (-not (Test-Path -Path $destinationDir)) {
+        New-Item -ItemType Directory -Path $destinationDir -Force
+    }
+
+    # Get the file size
+    $fileSize = (Get-Item $sourcePath).Length
+    $fileStreamRead = [System.IO.File]::OpenRead($sourcePath)
+    $fileStreamWrite = [System.IO.File]::OpenWrite($destinationPath)
+
+    # Set buffer size (e.g., 1MB)
+    $bufferSize = 1MB
+    $buffer = New-Object byte[] $bufferSize
+    $totalBytesCopied = 0
+
+    try {
+        do {
+            $readBytes = $fileStreamRead.Read($buffer, 0, $bufferSize)
+            $fileStreamWrite.Write($buffer, 0, $readBytes)
+            $totalBytesCopied += $readBytes
+
+            # Update progress bar
+            $percentage = ($totalBytesCopied / $fileSize) * 100
+            Write-Progress -Activity "Copying file..." -Status "$percentage% Complete:" -PercentComplete $percentage
+        }
+        while ($readBytes -ne 0)
+    }
+    finally {
+        $fileStreamRead.Close()
+        $fileStreamWrite.Close()
+    }
+}
+
+# Specify the source and destination file paths
+$sourceFileAdobe = "\\172.16.0.158\AmerivetNewUser\NewUserSetup\Software\AmerivetAcrobat.zip"
+$destinationFileAdobe = "C:\IT\AmerivetAcrobat.zip"
+
+# File paths for HP Support Assistant
+$sourceFileHP = "\\172.16.0.158\AmerivetNewUser\NewUserSetup\Software\HP Support Assistant.exe"
+$destinationFileHP = "C:\IT\HP Support Assistant.exe"
+
+# Call the function for Adobe Acrobat
+Copy-FileWithProgress -sourcePath $sourceFileAdobe -destinationPath $destinationFileAdobe
+
+# Call the function for HP Support Assistant
+Copy-FileWithProgress -sourcePath $sourceFileHP -destinationPath $destinationFileHP
+
+##############################################################################################
 
     } 
 

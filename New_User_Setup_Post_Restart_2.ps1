@@ -171,7 +171,7 @@ if ($HQ_IPs -contains $publicIP) {
     #Authenticates to OnPrem NAS for Adobe Download
     Write-Host "Mappting to NAS"
     $NASUser = '$NAS_User'
-    $NASPass = '$NASPass'
+    $NASPass = '$NAS_Pw'
     $NASCred = New-Object System.Management.Automation.PsCredential($NASUser,(ConvertTo-SecureString $NASPass -AsPlainText -Force))
 
     New-PSDrive -Name "A" -Root "\\$NAS_IP\AmerivetNewUser" -Persist -PSProvider "FileSystem" -Credential $NAScred

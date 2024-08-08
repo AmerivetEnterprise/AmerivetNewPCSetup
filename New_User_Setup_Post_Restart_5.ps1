@@ -107,7 +107,16 @@ set-itemproperty $RunOnceKey "NextRun" ('C:\Windows\System32\WindowsPowerShell\v
 
 $UPN = whoami /upn
 
-$UPN
+# Split the email into the username and domain parts
+$parts = $UPN.Split('@')
+$username = $parts[0]
+$domain = $parts[1]
+
+# Split the username on the dot, capitalize each part, then rejoin them
+$capitalizedUsername = ($username.Split('.') | ForEach-Object { $_.Substring(0,1).ToUpper() + $_.Substring(1).ToLower() }) -join '.'
+
+# Reassemble the full email
+$capitalizedUPN = "$capitalizedUsername@$domain"
 
 Write-Host ''
 
@@ -118,7 +127,7 @@ Read-Host "Press Enter to remove from New Scripts Group and Send Password Reset 
 $PA_URL = "$PA_URL_Complete"
 $Result = @{
 
-UPN = $UPN
+UPN = $capitalizedUPN
 
 }
 

@@ -29,7 +29,7 @@ foreach ($row in $data) {
 ###############################################################################################################################################################################################
 
 #Installs CrowdStrike Falcon Sensor
-Write-Host "Downloading and Installing CrowdStrike Falcon Sensor"
+Write-Host "Downloading and Installing CrowdStrike Falcon Sensor - This is slow"
 Invoke-WebRequest -Uri 'https://amerivetusa.sharepoint.com/:u:/s/IT/Ea7qg4xOmd5Ppy0QgALsHmwBHqNLhgs4FumgOoQ4DRQmGw?download=1' -OutFile "$env:TEMP/WindowsSensor.MaverickGyr.exe"; Start-Process -FilePath "$env:TEMP/WindowsSensor.MaverickGyr.exe" -ArgumentList "/install /quiet /norestart CID=$CID" -Wait
 Write-host ''
 Write-Host "CrowdStrike Falcon Sensor Installed Successfully" -ForegroundColor Green

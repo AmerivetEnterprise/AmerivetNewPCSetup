@@ -252,9 +252,11 @@ Copy-FileWithProgress -sourcePath $sourceFileHP -destinationPath $destinationFil
 #############################################################################################
 
 #unZip Adobe
+write-host "Unzipping Adobe"
 $unzipAdobe = Expand-Archive -Path "C:\IT\AmerivetAcrobat.zip" -DestinationPath "C:\IT\"
 
 #Adobe Silent Install
+write-host "Installing Adobe"
 $AdobeVersion = "24.1"
 Start-Process -FilePath "C:\IT\AmerivetAcrobat\Build\Setup\APRO$AdobeVersion\Adobe Acrobat\setup.exe" -ArgumentList "/sAll", "/msi EULA_ACCEPT=YES /qn" -NoNewWindow -Wait
 

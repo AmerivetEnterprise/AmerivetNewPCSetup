@@ -1,6 +1,6 @@
-﻿<#﻿
+<#﻿
 Version 5.1
-08/06/2024
+08/08/2024
 #>
 
 $host.UI.RawUI.WindowTitle = "New User Setup Post Restart 2"
@@ -110,7 +110,8 @@ Read-host 'Info.csv is missing, place in C:\IT before continuing '
     $NAS_Pw = $row.Password
     $HQIP1 = $row.HQIP1
     $HQIP2 = $row.HQIP2
-    $PA_URL_PCInfo  = $row.PA_URL_PCInfo 
+    $PA_URL_PCInfo  = $row.PA_URL_PCInfo
+    }
 
 #############################################################################################
 
@@ -164,9 +165,9 @@ $publicIP = (Invoke-WebRequest -Uri "http://ipinfo.io/ip" -TimeoutSec 10).Conten
 # Check conditions: 
 $HQ_IPs = "$HQIP1", "$HQIP2"
 if ($HQ_IPs -contains $publicIP) {
-    Write-Host "On Prem Setup detected"
-    }    
 
+    Write-Host "On Prem Setup detected"
+    
     #Authenticates to OnPrem NAS for Adobe Download
     Write-Host "Mappting to NAS"
     $NASUser = '$NAS_User'
@@ -200,7 +201,10 @@ if ($HQ_IPs -contains $publicIP) {
     #HP Support Assistant Download 
     Copy-Item "\\$NAS_IP\AmerivetNewUser\NewUserSetup\Software\HP Support Assistant.exe" -Destination "C:\IT\HP Support Assistant.exe"
 
-} else {
+    } 
+
+    else {
+
     Write-Host "Remote Setup Detected"
     $publicIP
     Write-Host "Downloading Adobe from OneDrive - This is slow"
@@ -211,7 +215,7 @@ if ($HQ_IPs -contains $publicIP) {
     Write-Host "Downloading HP Support Assistant from OneDrive - This is slow also"
     Invoke-WebRequest -Uri "https://amerivetusa.sharepoint.com/:u:/s/IT/EUayqvTnOIJJlY8idS8mVLwBbMbDpVu-vFJ2cPXZmuE8tw?download=1" -OutFile "C:\IT\HP Support Assistant.exe"
 
-}
+    }
 
 #############################################################################################
 

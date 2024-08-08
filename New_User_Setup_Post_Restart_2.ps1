@@ -129,7 +129,7 @@ Identifier = $Identifier
 }
 
 #Send Results to PA
-Invoke-WebRequest -Uri $PA_URL -Method POST -ContentType 'application/json' -Body ($result | ConvertTo-Json -Compress)
+Invoke-WebRequest -Uri "$PA_URL" -Method POST -ContentType 'application/json' -Body ($result | ConvertTo-Json -Compress)
 
 #########################################################################
 

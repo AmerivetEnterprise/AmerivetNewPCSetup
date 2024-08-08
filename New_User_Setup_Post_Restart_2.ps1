@@ -110,7 +110,7 @@ Read-host 'Info.csv is missing, place in C:\IT before continuing '
     $NAS_Pw = $row.Password
     $HQIP1 = $row.HQIP1
     $HQIP2 = $row.HQIP2
-    $PA_URL_PCInfo  = $row.PA_URL_PCInfo
+    $PA_URL_PCInfo = $row.PA_URL_PCInfo
     }
 
 #############################################################################################

@@ -28,6 +28,8 @@ slmgr.vbs /ipk $OS_Key
 
 #Stops user from opening old outlook
 Rename-Item -Path 'C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE' -NewName "OUTLOOK.EXE.BAK" 
+Write-Host "Renaming C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE to OUTLOOK.EXE.BAK" -foregroundcolor "yellow"
+Write-Host "Rename successful" -foregroundcolor "green"
 
 ##################################################################################################################################################################
 # Busylight Software install 

@@ -97,7 +97,8 @@ Write-host "Info.csv File in place" -ForegroundColor Green
 else
 {
 Write-Host "Location: IT Software\IT Software - Internal Only\New PC Setup Software\Info CSV\Info.csv" -ForegroundColor Yellow
-Read-host 'Info.csv is missing, place in C:\IT before continuing '
+Write-Host "Info.csv is missing, place in C:\IT before continuing" -foregroundcolor "red"
+Read-host "Press Enter to continue once complete"
 }
 
     #Import Info CSV
@@ -134,25 +135,29 @@ Invoke-WebRequest -Uri "$PA_URL_PCInfo" -Method POST -ContentType 'application/j
 #########################################################################
 
 #Installs ScreenConnect
+Write-Host 'Installing ScreenConnect' -foregroundcolor "yellow"
 Start-Process msiexec.exe -wait -ArgumentList '/I C:\IT\ConnectWiseControl.ClientSetup.Amerivet.msi /quiet /qn'
-Write-Host "ScreenConnect Amerivet Installed"
+Write-Host "ScreenConnect Amerivet Installed" -foregroundcolor "green"
 
-# UID Desktop Software install MSI  
+# UID Desktop Software install MSI
+Write-Host 'Installing UI' -foregroundcolor "yellow"
 Start-Process msiexec.exe -wait -ArgumentList '/I C:\IT\UI_Desktop.msi'
-Write-Host "UI Desktop Installed"
+Write-Host "UI Desktop Installed" -foregroundcolor "green"
 
 #Installs Datto for Corp Site
 #Start-process "C:\IT\DattoAgentInstaller.exe"
 
 #Set Power Settings 
+Write-Host "Updating Power Settings" -foregroundcolor "yellow"
 Powercfg /Change -monitor-timeout-ac 60
 Powercfg /Change -standby-timeout-ac 0
 Powercfg /Change -hibernate-timeout-ac 0
-Write-Host "Power Settings Adjusted"
+Write-Host "Power Settings Adjusted" -foregroundcolor "green"
 
 #Intalls Office 
+Write-Host 'Office Installing' -foregroundcolor "yellow"
 Start-Process -wait C:\IT\setupo365businessretail.x64.en-us_.exe
-Write-Host "Office Installed"
+Write-Host "Office Installed" -foregroundcolor "green"
 Stop-Process -name "OfficeC2RClient" -Confirm:$false
 
 #############################################################################################
@@ -165,15 +170,15 @@ $publicIP = (Invoke-WebRequest -Uri "http://ipinfo.io/ip" -TimeoutSec 10).Conten
 $HQ_IPs = "$HQIP1", "$HQIP2"
 if ($HQ_IPs -contains $publicIP) {
 
-    Write-Host "On Prem Setup detected"
+    Write-Host "On Prem Setup detected" -foregroundcolor "yellow"
     
     #Authenticates to OnPrem NAS for Adobe Download
-    Write-Host "Mapping to NAS"
+    Write-Host "Mapping to NAS" -foregroundcolor "yellow"
     $NASCred = New-Object System.Management.Automation.PsCredential($NASUser,(ConvertTo-SecureString $NASPass -AsPlainText -Force))
     New-PSDrive -Name "A" -Root "\\172.16.0.158\AmerivetNewUser" -Persist -PSProvider "FileSystem" -Credential $NAScred
     
-    Write-Host "Downloading Adobe from NAS"
-    Write-Host "Downloading HP Support Assistant from NAS"
+    Write-Host "Downloading Adobe from NAS" -foregroundcolor "yellow"
+    Write-Host "Downloading HP Support Assistant from NAS" -foregroundcolor "yellow"
 
     ##############################################################################################
 
@@ -237,30 +242,33 @@ Copy-FileWithProgress -sourcePath $sourceFileHP -destinationPath $destinationFil
 
     else {
 
-    Write-Host "Remote Setup Detected"
+    Write-Host "Remote Setup Detected" -foregroundcolor "yellow"
     $publicIP
-    Write-Host "Downloading Adobe from OneDrive - This is slow"
+    Write-Host "Downloading Adobe from OneDrive - This is slow" -foregroundcolor "yellow"
     #Location: IT Software\IT Software - Internal Only\New PC Setup Software\Adobe Acrobat\AdobeAcrobat.zip
     Invoke-WebRequest -Uri "https://amerivetusa.sharepoint.com/:u:/s/IT/EfO2m45Pf9FKj3gHBRahY00B4nHQP4WVoOIgjzl17pHhCA?download=1" -OutFile "C:\IT\AmerivetAcrobat.zip"
     
     #Location: IT Software\IT Software - Internal Only\New PC Setup Software\HP Support Assistant\HP Support Assistant.exe
-    Write-Host "Downloading HP Support Assistant from OneDrive - This is slow also"
+    Write-Host "Downloading HP Support Assistant from OneDrive - This is slow also" -foregroundcolor "yellow"
     Invoke-WebRequest -Uri "https://amerivetusa.sharepoint.com/:u:/s/IT/EUayqvTnOIJJlY8idS8mVLwBbMbDpVu-vFJ2cPXZmuE8tw?download=1" -OutFile "C:\IT\HP Support Assistant.exe"
 
     }
 
 #############################################################################################
 
+Write-Host "Adobe Downloaded Successfully" -foregroundcolor "green"
+Write-Host "HP Support Assistant Downloaded Successfully" -foregroundcolor "green"
+
 #unZip Adobe
-write-host "Unzipping Adobe"
+write-host "Unzipping Adobe" -foregroundcolor "yellow"
 $unzipAdobe = Expand-Archive -Path "C:\IT\AmerivetAcrobat.zip" -DestinationPath "C:\IT\"
 
 #Adobe Silent Install
-write-host "Installing Adobe"
+write-host "Installing Adobe" -foregroundcolor "yellow"
 $AdobeVersion = "24.1"
 Start-Process -FilePath "C:\IT\AmerivetAcrobat\Build\Setup\APRO$AdobeVersion\Adobe Acrobat\setup.exe" -ArgumentList "/sAll", "/msi EULA_ACCEPT=YES /qn" -NoNewWindow -Wait
 
-Write-Host "Adobe Installed"
+Write-Host "Adobe Installed" -foregroundcolor "green"
 
 ###############################################################################################
 

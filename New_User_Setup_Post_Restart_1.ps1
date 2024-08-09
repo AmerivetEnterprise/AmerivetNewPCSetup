@@ -1,9 +1,7 @@
-﻿<#﻿
-Version 5.1
-08/06/2024
-#>
+# Version 6.0
+# 08/09/2024
 
-#New User Script #2 Run this after restart - Computer Setup Automation
+#New User Script #1 Run this after restart - Computer Setup Automation
 
 $host.UI.RawUI.WindowTitle = "New User Setup Post Restart 1"
 
@@ -37,6 +35,9 @@ $NewPCName = $NewPCName -replace '[_]',''
 rename-computer -newname "$NewPCName"
 } 
 
+Write-Host "Computer Renamed: $NewPCName"
+Add-Content -Path C:\IT\Complete.txt -value "PC renamed to : $NewPCName"
+
 #############################################################################################
 
 #Enables RunOnce 
@@ -46,6 +47,8 @@ write-host ''
 $RunOnceKey = "HKLM:\Software\Microsoft\Windows\CurrentVersion\RunOnce"
 set-itemproperty $RunOnceKey "NextRun" ('C:\Windows\System32\WindowsPowerShell\v1.0\Powershell.exe -executionPolicy Unrestricted -File ' + "C:\IT\New_User_Setup_Post_Restart_2.ps1")
 write-host ''
+write-host 'RunOnce Enabled'
+Add-Content -Path C:\IT\Complete.txt -value "RunOnce Enabled"
 
 #############################################################################################
 
@@ -194,6 +197,8 @@ write-host 'Uninstalled *Twitter*'
 Get-AppxPackage -AllUsers *Wunderlist* | Remove-AppxPackage
 write-host 'Uninstalled *Wunderlist*'
 
+Add-Content -Path C:\IT\Complete.txt -value "Bloatware uninstalled"
+
 ############################################################################################
 
 # List of programs to uninstall
@@ -306,25 +311,37 @@ $InstalledPrograms | ForEach {
     Catch {Write-Warning -Message "Failed to uninstall: [$($_.Name)]"}
 }
 
+Add-Content -Path C:\IT\Complete.txt -value "HP Software removed hopefully"
+
 ############################################################################################
 
 #Remove HP Connection Optmizer 
 Start-Process -FilePath "C:\Program Files (x86)\InstallShield Installation Information\{6468C4A5-E47E-405F-B675-A70A70983EA6}\setup.exe" -ArgumentList "-runfromtemp", "-l0x0409", "-removeonly", "/passive" -NoNewWindow -Wait
+Add-Content -Path C:\IT\Complete.txt -value "Connection Optimizer Removed"
 
 #HP doc uninstall 
 # Remove registry key
 Remove-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\HP_Documentation" -Force
+Add-Content -Path C:\IT\Complete.txt -value "HP Doc uninstalled"
 
 # Remove shortcuts
 Remove-Item -Path "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\HP Documentation.lnk" -Force -ErrorAction SilentlyContinue
 Remove-Item -Path "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\HP\HP Documentation.lnk" -Force -ErrorAction SilentlyContinue
+Add-Content -Path C:\IT\Complete.txt -value "HP Shortcuts removed"
 
 # Remove directory
 Remove-Item -Path "C:\Program Files\HP\Documentation" -Recurse -Force -ErrorAction SilentlyContinue
+Add-Content -Path C:\IT\Complete.txt -value "HP Directory Shortcuts removed"
 
 #############################################################################################
 
-Add-Content -Path C:\IT\Complete.txt -value "`NUSPR_1 - Complete"
-
+Add-Content -Path C:\IT\Complete.txt -value "NUSPR_1 - Complete"
+write-host ''
+[console]::ForeGroundColor = "Red"
+Read-Host "Press Enter to restart or restart after updates."
+[console]::ForeGroundColor = "White"
+$formattedTimestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+Add-Content -Path C:\IT\Complete.txt -value "Restarting: $formattedTimestamp"
+write-host ''
+Start-Sleep 2
 Restart-Computer
-

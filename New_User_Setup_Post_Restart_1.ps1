@@ -52,6 +52,11 @@ Add-Content -Path C:\IT\Complete.txt -value "RunOnce Enabled"
 
 #############################################################################################
 
+Start-Process "ms-windows-store://updates"
+Add-Content -Path C:\IT\Complete.txt -value "MSFT Store Update Page Opened"
+
+#############################################################################################
+
 #Removes Bloatware 
 
 Write-Host ''

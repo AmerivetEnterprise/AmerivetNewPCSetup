@@ -267,6 +267,7 @@ $UninstallPrograms = @(
     "HP Sure Sense"
     "HP Sure Sense Installer"
     "HP Wolf Security"
+    "HP Wolf Security Console"
     "HP Wolf Security Application Support for Sure Sense"
     "HP Wolf Security Application Support for Windows"
     "HP Client Security Manager"
@@ -337,6 +338,19 @@ Add-Content -Path C:\IT\Complete.txt -value "HP Shortcuts removed"
 # Remove directory
 Remove-Item -Path "C:\Program Files\HP\Documentation" -Recurse -Force -ErrorAction SilentlyContinue
 Add-Content -Path C:\IT\Complete.txt -value "HP Directory Shortcuts removed"
+
+#############################################################################################
+
+# Ensure the Speech assembly is loaded
+Add-Type -AssemblyName System.Speech
+
+# Create a new SpeechSynthesizer object
+$synthesizer = New-Object System.Speech.Synthesis.SpeechSynthesizer
+
+# Speak a text
+$synthesizer.Speak('Make sure all the updates are done!')
+
+$synthesizer.Speak('Then restart me')
 
 #############################################################################################
 

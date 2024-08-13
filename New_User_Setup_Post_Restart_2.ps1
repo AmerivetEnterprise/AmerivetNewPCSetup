@@ -193,6 +193,10 @@ $destinationFileAdobe = "C:\IT\AmerivetAcrobat.zip"
 $sourceFileHP = "\\172.16.0.158\AmerivetNewUser\NewUserSetup\Software\HP Support Assistant.exe"
 $destinationFileHP = "C:\IT\HP Support Assistant.exe"
 
+# File paths for CrowdStrike
+$sourceFileHP = "\\172.16.0.158\AmerivetNewUser\NewUserSetup\Software\WindowsSensor.MaverickGyr_7.16.18608.exe"
+$destinationFileHP = "C:\IT\WindowsSensor.MaverickGyr_7.16.18608.exe"
+
 # Call the function for Adobe Acrobat
 Copy-FileWithProgress -sourcePath $sourceFileAdobe -destinationPath $destinationFileAdobe
 Add-Content -Path C:\IT\Complete.txt -value "Adobe Downloaded from NAS"
@@ -201,6 +205,10 @@ Add-Content -Path C:\IT\Complete.txt -value "Adobe Downloaded from NAS"
 Copy-FileWithProgress -sourcePath $sourceFileHP -destinationPath $destinationFileHP
 Add-Content -Path C:\IT\Complete.txt -value "HP Support Assistant Downloaded from NAS"
 
+# Call the function for CrowdStrike Download
+Copy-FileWithProgress -sourcePath $sourceFileCS -destinationPath $destinationFileCS
+Add-Content -Path C:\IT\Complete.txt -value "CrowdStrike Downloaded from NAS"
+
 ##############################################################################################
 
     } 
@@ -208,7 +216,9 @@ Add-Content -Path C:\IT\Complete.txt -value "HP Support Assistant Downloaded fro
     else {
 
     Write-Host "Remote Setup Detected" -foregroundcolor "yellow"
+    Write-Host ''
     $publicIP
+    Write-Host ''
     Write-Host "Downloading Adobe from OneDrive - This is slow" -foregroundcolor "yellow"
     #Location: IT Software\IT Software - Internal Only\New PC Setup Software\Adobe Acrobat\AdobeAcrobat.zip
     Invoke-WebRequest -Uri "https://amerivetusa.sharepoint.com/:u:/s/IT/EfO2m45Pf9FKj3gHBRahY00B4nHQP4WVoOIgjzl17pHhCA?download=1" -OutFile "C:\IT\AmerivetAcrobat.zip"
@@ -218,12 +228,20 @@ Add-Content -Path C:\IT\Complete.txt -value "HP Support Assistant Downloaded fro
     Write-Host "Downloading HP Support Assistant from OneDrive - This is slow also" -foregroundcolor "yellow"
     Invoke-WebRequest -Uri "https://amerivetusa.sharepoint.com/:u:/s/IT/EUayqvTnOIJJlY8idS8mVLwBbMbDpVu-vFJ2cPXZmuE8tw?download=1" -OutFile "C:\IT\HP Support Assistant.exe"
     Add-Content -Path C:\IT\Complete.txt -value "HP Support Assistant Downloaded from OneDrive"
+
+    #Location: IT Software\IT Software - Internal Only\New PC Setup Software\CrowdStrike Falcon Sensor\
+    Write-Host "Downloading CrowdStrike Falcon Sensor - This is also slow" -ForegroundColor yellow
+    Invoke-WebRequest -Uri 'https://amerivetusa.sharepoint.com/:u:/s/IT/Ea7qg4xOmd5Ppy0QgALsHmwBHqNLhgs4FumgOoQ4DRQmGw?download=1' -OutFile "C:\IT\WindowsSensor.MaverickGyr.exe"
+    Add-Content -Path C:\IT\Complete.txt -value "CrowdStrike Falcon Sensor downloaded"
     }
 
 #############################################################################################
 
-Write-Host "Adobe Downloaded Successfully" -foregroundcolor "green"
-Write-Host "HP Support Assistant Downloaded Successfully" -foregroundcolor "green"
+Write-Host ''
+Write-Host "Adobe Downloaded from OneDrive Successfully" -foregroundcolor green
+Write-Host "HP Support Assistant Downloaded from OneDrive Successfully" -foregroundcolor green
+Write-Host "CrowdStrike Falcon Sensor Downloaded from OneDrive Successfully" -ForegroundColor green
+Write-Host ''
 
 #unZip Adobe
 write-host "Unzipping Adobe" -foregroundcolor "yellow"
@@ -271,12 +289,12 @@ Add-Content -Path C:\IT\Complete.txt -value "OS Key verified $OS_Key"
 ##################################################################################################################################################################
 
 #Installs CrowdStrike Falcon Sensor
-Write-Host "Downloading and Installing CrowdStrike Falcon Sensor - This is slow" -ForegroundColor yellow
-Invoke-WebRequest -Uri 'https://amerivetusa.sharepoint.com/:u:/s/IT/Ea7qg4xOmd5Ppy0QgALsHmwBHqNLhgs4FumgOoQ4DRQmGw?download=1' -OutFile "$env:TEMP/WindowsSensor.MaverickGyr.exe"; Start-Process -FilePath "$env:TEMP/WindowsSensor.MaverickGyr.exe" -ArgumentList "/install /quiet /norestart CID=$CID" -Wait
+Write-Host "Installing CrowdStrike Falcon Sensor" -ForegroundColor yellow
+Start-Process -FilePath "C:\IT\WindowsSensor.MaverickGyr.exe" -ArgumentList "/install /quiet /norestart CID=$CID" -Wait
 Write-host ''
 Write-Host "CrowdStrike Falcon Sensor Installed Successfully" -ForegroundColor Green
 Write-host ''
-Add-Content -Path C:\IT\Complete.txt -value "CrowdStrike Falcon Sensor downloaded and installed"
+Add-Content -Path C:\IT\Complete.txt -value "CrowdStrike Falcon Sensor installed"
 
 #################################################################################################################################################
 
@@ -309,6 +327,22 @@ New-ItemProperty -Path "HKCU:\Software\Microsoft\Office\16.0\Outlook\Profiles\Ou
 New-ItemProperty -Path "HKCU:\Software\Microsoft\Office\16.0\Outlook\Profiles\Outlook\0a0d020000000000c000000000000046\" -Name 000b3d1c -Value ([byte[]](0x00,0x00))
 
 Add-Content -Path C:\IT\Complete.txt -value "Create New Outlook Registry Keys"
+
+##################################################################################################################################################################
+
+# Download Teams Installer
+$TeamsDLPath = "C:\IT\Teams_windows_x64.msix"
+Write-host 'Downloading Teams' -ForegroundColor Yellow
+Invoke-WebRequest -Uri "https://go.microsoft.com/fwlink/?linkid=2196106&clcid=0x409&culture=en-us&country=us" -OutFile "$TeamsDLPath"
+Write-Host "Teams Download completed." -ForegroundColor Green
+Add-Content -Path C:\IT\Complete.txt -value "Downloading Teams"
+
+# Install Teams Silently
+Write-host 'Installing Teams' -ForegroundColor Yellow
+Add-AppxPackage -Path $TeamsDLPath
+Write-Host "Teams Installation completed."-ForegroundColor Green
+Add-Content -Path C:\IT\Complete.txt -value "Teams Installation completed"
+
 
 ##################################################################################################################################################################
 
@@ -453,16 +487,92 @@ Read-Host 'Are all HP support assistant driver updates complete? [y/n]'
 write-Host ''
 Read-Host 'HP Support Assistant: Uncheck auto software update and uncheck all settings in more settings? [y/n]'
 Write-Host ''
+
+if($Identifier -eq "Replacement")
+{
 Read-Host 'If this is a computer replacement, you will have to manually put their new device in the Security - Autopatch Group [y/n]'
 Write-Host ''
 Read-Host 'Did you click Discover Devices in Windows Autopatch https://endpoint.microsoft.com/#view/Microsoft_Intune_DeviceSettings/DevicesMenu/~/windowsAutopatchDevices [y/n]'
 Write-Host ''
+}
+else {}
+
 Read-Host 'Did you disable AutoLogin? [y/n]'
 write-host ''
 [console]::ForeGroundColor = "Red"
-Read-Host 'IS HP WOLF SECURITY REMOVED? [y/n]'
+Read-Host 'IS HP WOLF SECURITY CONSOLE REMOVED? [y/n]'
 [console]::ForeGroundColor = "White"
 Write-host ''
+
+########################################################################################
+
+#Final confrim for WOLF Security and New outlook
+
+# Load necessary assemblies
+Add-Type -AssemblyName System.Windows.Forms
+Add-Type -AssemblyName System.Drawing
+
+# Create a new form
+$form = New-Object System.Windows.Forms.Form
+$form.Text = 'Confirm Action'
+$form.Size = New-Object System.Drawing.Size(300,200)
+$form.StartPosition = 'CenterScreen'
+$form.BackColor = [System.Drawing.Color]::Red  # Set the background color to red
+
+# Create a label
+$label = New-Object System.Windows.Forms.Label
+$label.Text = "You must agree to the conditions to proceed."
+$label.Location = New-Object System.Drawing.Point(10,10)
+$label.Size = New-Object System.Drawing.Size(280,20)
+$label.ForeColor = [System.Drawing.Color]::White  # Set text color to white for visibility
+
+# Create a checkbox
+$checkBox = New-Object System.Windows.Forms.CheckBox
+$checkBox.Location = New-Object System.Drawing.Point(10,40)
+$checkBox.Size = New-Object System.Drawing.Size(280,40)
+$checkBox.Text = "HP WOLF SECURITY and releated HP Security UNINSTALLED"
+$checkBox.ForeColor = [System.Drawing.Color]::White  # Set text color to white for visibility
+
+$checkBox2 = New-Object System.Windows.Forms.CheckBox
+$checkBox2.Location = New-Object System.Drawing.Point(10,80)
+$checkBox2.Size = New-Object System.Drawing.Size(280,40)
+$checkBox2.Text = "New Outlook enabled"
+$checkBox2.ForeColor = [System.Drawing.Color]::White  # Set text color to white for visibility
+
+# Create an OK button
+$okButton = New-Object System.Windows.Forms.Button
+$okButton.Location = New-Object System.Drawing.Point(110,135)
+$okButton.Size = New-Object System.Drawing.Size(75,23)
+$okButton.Text = "OK"
+$okButton.Enabled = $false
+
+# Event handler for the checkbox HP WOLF
+$checkBox.Add_Click({
+    $okButton.Enabled = $checkBox.Checked
+})
+
+
+# Event handler for the OK button click
+$okButton.Add_Click({
+    $form.DialogResult = [System.Windows.Forms.DialogResult]::OK
+    $form.Close()
+})
+
+# Add controls to the form
+$form.Controls.Add($checkBox)
+$form.Controls.Add($checkBox2)
+$form.Controls.Add($label)
+$form.Controls.Add($okButton)
+$form.AcceptButton = $okButton
+
+
+# Show the form as a dialog box
+$result = $form.ShowDialog()
+
+# Cleanup
+$form.Dispose()
+
+##################################################################################################################################################
 
 #Disables Old Outlook
 Rename-Item -Path 'C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE' -NewName "OUTLOOK.EXE.BAK" 

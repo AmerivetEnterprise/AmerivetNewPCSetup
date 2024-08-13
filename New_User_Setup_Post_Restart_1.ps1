@@ -52,8 +52,27 @@ Add-Content -Path C:\IT\Complete.txt -value "RunOnce Enabled"
 
 #############################################################################################
 
-Start-Process "ms-windows-store://updates"
-Add-Content -Path C:\IT\Complete.txt -value "MSFT Store Update Page Opened"
+Add-Type -AssemblyName System.Windows.Forms
+
+try {
+    # Attempt to open the Microsoft Store
+    Start-Process "ms-windows-store://updates"
+    Write-Host "Opening Microsoft Store..."
+    Add-Content -Path C:\IT\Complete.txt -value "MSFT Store Update Page Opened auto"
+}
+catch {
+    # Error handling if opening the store fails
+    Write-Host "Failed to open Microsoft Store automatically."
+    $result = [System.Windows.Forms.MessageBox]::Show("Unable to open the Microsoft Store automatically. Please open the Microsoft Store manually from the Start menu and start updates before proceeding.", "Error Opening Store", [System.Windows.Forms.MessageBoxButtons]::OKCancel, [System.Windows.Forms.MessageBoxIcon]::Error)
+    
+    if ($result -eq [System.Windows.Forms.DialogResult]::OK) {
+        Write-Host "MSFT Store Opened Manually."
+        Add-Content -Path C:\IT\Complete.txt -value "MSFT Store Update Page Opened manually"
+    } else {
+        Write-Host "Operation cancelled."
+        Add-Content -Path C:\IT\Complete.txt -value "MSFT Store Operation cancelled"
+    }
+}
 
 #############################################################################################
 

@@ -57,6 +57,14 @@ Add-Content -Path C:\IT\Complete.txt -value "MSFT Store Update Page Opened"
 
 #############################################################################################
 
+# Ensure the Speech assembly is loaded
+Add-Type -AssemblyName System.Speech
+
+# Create a new SpeechSynthesizer object
+$synthesizer = New-Object System.Speech.Synthesis.SpeechSynthesizer
+
+#############################################################################################
+
 #Removes Bloatware 
 
 Write-Host ''
@@ -267,10 +275,11 @@ $UninstallPrograms = @(
     "HP Sure Sense"
     "HP Sure Sense Installer"
     "HP Wolf Security"
-    "HP Wolf Security Console"
+    "HP Wolf Security - Console"
     "HP Wolf Security Application Support for Sure Sense"
     "HP Wolf Security Application Support for Windows"
     "HP Client Security Manager"
+    "HP Security Update Service"
 )
 
 $HPidentifier = "AD2F1837"
@@ -340,25 +349,90 @@ Remove-Item -Path "C:\Program Files\HP\Documentation" -Recurse -Force -ErrorActi
 Add-Content -Path C:\IT\Complete.txt -value "HP Directory Shortcuts removed"
 
 #############################################################################################
-
-# Ensure the Speech assembly is loaded
-Add-Type -AssemblyName System.Speech
-
-# Create a new SpeechSynthesizer object
-$synthesizer = New-Object System.Speech.Synthesis.SpeechSynthesizer
+#Final Confirm before restart
 
 # Speak a text
-$synthesizer.Speak('Make sure all the updates are done!')
+$synthesizer.Speak('Read Me')
 
-$synthesizer.Speak('Then restart me')
+# Load necessary assemblies
+Add-Type -AssemblyName System.Windows.Forms
+Add-Type -AssemblyName System.Drawing
+
+# Create a new form
+$form = New-Object System.Windows.Forms.Form
+$form.Text = 'Confirm Action'
+$form.Size = New-Object System.Drawing.Size(300,250)
+$form.StartPosition = 'CenterScreen'
+$form.BackColor = [System.Drawing.Color]::Red  # Set the background color to red
+
+# Create a label
+$label = New-Object System.Windows.Forms.Label
+$label.Text = "You must agree to the conditions to proceed."
+$label.Location = New-Object System.Drawing.Point(10,10)
+$label.Size = New-Object System.Drawing.Size(280,20)
+$label.ForeColor = [System.Drawing.Color]::White  # Set text color to white for visibility
+
+# Create a checkbox
+$checkBox = New-Object System.Windows.Forms.CheckBox
+$checkBox.Location = New-Object System.Drawing.Point(10,40)
+$checkBox.Size = New-Object System.Drawing.Size(280,40)
+$checkBox.Text = "Confirm Windows Store Apps are Updated"
+$checkBox.ForeColor = [System.Drawing.Color]::White  # Set text color to white for visibility
+
+$checkBox2 = New-Object System.Windows.Forms.CheckBox
+$checkBox2.Location = New-Object System.Drawing.Point(10,70)
+$checkBox2.Size = New-Object System.Drawing.Size(280,40)
+$checkBox2.Text = "Remove HP Wolf Security"
+$checkBox2.ForeColor = [System.Drawing.Color]::White  # Set text color to white for visibility
+
+$checkBox3 = New-Object System.Windows.Forms.CheckBox
+$checkBox3.Location = New-Object System.Drawing.Point(10,90)
+$checkBox3.Size = New-Object System.Drawing.Size(280,60)
+$checkBox3.Text = "Clicking OK will restart computer"
+$checkBox3.ForeColor = [System.Drawing.Color]::White  # Set text color to white for visibility
+
+# Create an OK button
+$okButton = New-Object System.Windows.Forms.Button
+$okButton.Location = New-Object System.Drawing.Point(110,180)
+$okButton.Size = New-Object System.Drawing.Size(75,23)
+$okButton.Text = "OK"
+$okButton.Enabled = $false
+
+# Event handler for the checkbox HP WOLF
+$checkBox.Add_Click({
+    $okButton.Enabled = $checkBox.Checked
+})
+
+# Event handler for the OK button click
+$okButton.Add_Click({
+    $form.DialogResult = [System.Windows.Forms.DialogResult]::OK
+    $form.Close()
+})
+
+# Add controls to the form
+$form.Controls.Add($checkBox)
+$form.Controls.Add($checkBox2)
+$form.Controls.Add($checkBox3)
+$form.Controls.Add($label)
+$form.Controls.Add($okButton)
+$form.AcceptButton = $okButton
+
+
+# Show the form as a dialog box
+$result = $form.ShowDialog()
+
+# Cleanup
+$form.Dispose()
+
+#############################################################################################
+
+# Speak a text
+$synthesizer.Speak('Initiating Restart')
 
 #############################################################################################
 
 Add-Content -Path C:\IT\Complete.txt -value "NUSPR_1 - Complete"
 write-host ''
-[console]::ForeGroundColor = "Red"
-Read-Host "Press Enter to restart or restart after updates."
-[console]::ForeGroundColor = "White"
 $formattedTimestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
 Add-Content -Path C:\IT\Complete.txt -value "Restarting: $formattedTimestamp"
 write-host ''

@@ -28,6 +28,10 @@ Remove-Item -Path "C:\IT\Info.csv" -Force
 Write-Host "Info.csv Deleted" -ForegroundColor Green
 Add-Content -Path C:\IT\Complete.txt -value "Info.csv Deleted"
 
+Remove-Item -Path "C:\IT\WindowsSensor.MaverickGyr.exe" -Force
+Write-Host "CrowdStrike Falcon Sensor Deleted" -ForegroundColor Green
+Add-Content -Path C:\IT\Complete.txt -value "CrowdStrike Falcon Sensor Deleted"
+
 #####################################################################################
 
 #Remove Desktop Shortcuts 

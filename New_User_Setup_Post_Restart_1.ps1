@@ -271,6 +271,7 @@ $UninstallPrograms = @(
     "HP Collaboration Keyboard for Skype for Business"
     "HP Sure Click"
     "HP Sure Run"
+    "HP Sure Run Module"
     "HP Sure Recover"
     "HP Sure Sense"
     "HP Sure Sense Installer"

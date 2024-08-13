@@ -195,7 +195,7 @@ $destinationFileHP = "C:\IT\HP Support Assistant.exe"
 
 # File paths for CrowdStrike
 $sourceFileHP = "\\172.16.0.158\AmerivetNewUser\NewUserSetup\Software\WindowsSensor.MaverickGyr_7.16.18608.exe"
-$destinationFileHP = "C:\IT\WindowsSensor.MaverickGyr_7.16.18608.exe"
+$destinationFileHP = "C:\IT\WindowsSensor.MaverickGyr.exe"
 
 # Call the function for Adobe Acrobat
 Copy-FileWithProgress -sourcePath $sourceFileAdobe -destinationPath $destinationFileAdobe

@@ -274,6 +274,16 @@ $OS_Key = $OS_Key.OA3xOriginalProductKey
 
 Add-Content -Path C:\IT\Complete.txt -value "OS Key verified $OS_Key"
 
+#################################################################################################################################################
+
+#Installs CrowdStrike Falcon Sensor
+Write-Host "Installing CrowdStrike Falcon Sensor" -ForegroundColor yellow
+Start-Process -FilePath "C:\IT\WindowsSensor.MaverickGyr.exe" -ArgumentList "/install /quiet /norestart CID=$CID" -Wait
+Write-host ''
+Write-Host "CrowdStrike Falcon Sensor Installed Successfully" -ForegroundColor Green
+Write-host ''
+Add-Content -Path C:\IT\Complete.txt -value "CrowdStrike Falcon Sensor installed"
+
 ##############################################################################################################
 
 # Download Teams Installer
@@ -286,40 +296,18 @@ Add-Content -Path C:\IT\Complete.txt -value "Downloading Teams"
 # Install Teams Silently
 Add-Type -AssemblyName System.Windows.Forms
 
+# Try to install the Teams package
 try {
-# Install Teams Silently
-Write-host 'Installing Teams' -ForegroundColor Yellow
-Add-AppxPackage -Path $TeamsDLPath
-Add-Content -Path C:\IT\Complete.txt -value "Attempting Teams Install"
+    Add-AppxPackage -Path $TeamsDLPath -ErrorAction Stop
+    Write-Host "Teams Installation completed." -ForegroundColor Green
+    Add-Content -Path C:\IT\Complete.txt -Value "Teams Installation completed"
+} catch {
+    # If an error occurs (e.g., Teams is already installed), notify the user
+    [System.Windows.Forms.MessageBox]::Show("Teams is already installed.", "Teams Installation", [System.Windows.Forms.MessageBoxButtons]::OK, [System.Windows.Forms.MessageBoxIcon]::Error)
+    Add-Content -Path C:\IT\Complete.txt -Value "Teams Already Installed"
 }
-catch {
-    # Error handling if opening the store fails
-    Write-Host "Teams Appears to already be installed"
-    $result = [System.Windows.Forms.MessageBox]::Show("Teams Appears to already be installed", "Teams already Installed", [System.Windows.Forms.MessageBoxButtons]::OKCancel, [System.Windows.Forms.MessageBoxIcon]::Error)
-    
-    if ($result -eq [System.Windows.Forms.DialogResult]::OK) {
-        Write-Host "Teams Already Installed"
-        Add-Content -Path C:\IT\Complete.txt -value "Teams Already Installed"
-    } else {
-        Write-Host "Operation cancelled."
-        Add-Content -Path C:\IT\Complete.txt -value "Teams Already Installed"
-    }
-}
-
-Write-Host "Teams Installation completed."-ForegroundColor Green
-Add-Content -Path C:\IT\Complete.txt -value "Teams Installation completed"
 
 ##################################################################################################################################################################
-
-#Installs CrowdStrike Falcon Sensor
-Write-Host "Installing CrowdStrike Falcon Sensor" -ForegroundColor yellow
-Start-Process -FilePath "C:\IT\WindowsSensor.MaverickGyr.exe" -ArgumentList "/install /quiet /norestart CID=$CID" -Wait
-Write-host ''
-Write-Host "CrowdStrike Falcon Sensor Installed Successfully" -ForegroundColor Green
-Write-host ''
-Add-Content -Path C:\IT\Complete.txt -value "CrowdStrike Falcon Sensor installed"
-
-#################################################################################################################################################
 
 start Outlook.exe
 Add-Content -Path C:\IT\Complete.txt -value "Outlook Launched"

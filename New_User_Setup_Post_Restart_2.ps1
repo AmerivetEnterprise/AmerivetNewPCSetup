@@ -9,18 +9,6 @@ $RunOnceKey = "HKLM:\Software\Microsoft\Windows\CurrentVersion\RunOnce"
 set-itemproperty $RunOnceKey "NextRun" ('C:\Windows\System32\WindowsPowerShell\v1.0\Powershell.exe -executionPolicy Unrestricted -File ' + "C:\IT\New_User_Setup_Post_Restart_CleanUp.ps1")
 Add-Content -Path C:\IT\Complete.txt -value "Set RunOnce Key for Cleanup Script"
 
-####################################################################################################################################################
-
-Write-Host ''
-
-Invoke-Item "C:\Program Files\Internet Explorer\iexplore.exe"
-
-Read-Host 'Launching IE, click "Use Recommended Settings" then Press enter to proceed, This is so the HTTP Request can function'
-
-Write-Host ''
-
-Add-Content -Path C:\IT\Complete.txt -value "IE Launched"
-
 ################################################################## Aquires PC Name and Serial Number ############################################################################
 
 $PCName = $env:computername

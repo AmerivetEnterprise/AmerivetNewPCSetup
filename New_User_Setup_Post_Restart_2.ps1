@@ -274,6 +274,41 @@ $OS_Key = $OS_Key.OA3xOriginalProductKey
 
 Add-Content -Path C:\IT\Complete.txt -value "OS Key verified $OS_Key"
 
+##############################################################################################################
+
+# Download Teams Installer
+$TeamsDLPath = "C:\IT\Teams_windows_x64.msix"
+Write-host 'Downloading Teams' -ForegroundColor Yellow
+Invoke-WebRequest -Uri "https://go.microsoft.com/fwlink/?linkid=2196106&clcid=0x409&culture=en-us&country=us" -OutFile "$TeamsDLPath"
+Write-Host "Teams Download completed." -ForegroundColor Green
+Add-Content -Path C:\IT\Complete.txt -value "Downloading Teams"
+
+# Install Teams Silently
+Add-Type -AssemblyName System.Windows.Forms
+
+try {
+# Install Teams Silently
+Write-host 'Installing Teams' -ForegroundColor Yellow
+Add-AppxPackage -Path $TeamsDLPath
+Add-Content -Path C:\IT\Complete.txt -value "Attempting Teams Install"
+}
+catch {
+    # Error handling if opening the store fails
+    Write-Host "Teams Appears to already be installed"
+    $result = [System.Windows.Forms.MessageBox]::Show("Teams Appears to already be installed", "Teams already Installed", [System.Windows.Forms.MessageBoxButtons]::OKCancel, [System.Windows.Forms.MessageBoxIcon]::Error)
+    
+    if ($result -eq [System.Windows.Forms.DialogResult]::OK) {
+        Write-Host "Teams Already Installed"
+        Add-Content -Path C:\IT\Complete.txt -value "Teams Already Installed"
+    } else {
+        Write-Host "Operation cancelled."
+        Add-Content -Path C:\IT\Complete.txt -value "Teams Already Installed"
+    }
+}
+
+Write-Host "Teams Installation completed."-ForegroundColor Green
+Add-Content -Path C:\IT\Complete.txt -value "Teams Installation completed"
+
 ##################################################################################################################################################################
 
 #Installs CrowdStrike Falcon Sensor
@@ -316,23 +351,7 @@ New-ItemProperty -Path "HKCU:\Software\Microsoft\Office\16.0\Outlook\Profiles\Ou
 
 Add-Content -Path C:\IT\Complete.txt -value "Create New Outlook Registry Keys"
 
-##################################################################################################################################################################
-
-# Download Teams Installer
-$TeamsDLPath = "C:\IT\Teams_windows_x64.msix"
-Write-host 'Downloading Teams' -ForegroundColor Yellow
-Invoke-WebRequest -Uri "https://go.microsoft.com/fwlink/?linkid=2196106&clcid=0x409&culture=en-us&country=us" -OutFile "$TeamsDLPath"
-Write-Host "Teams Download completed." -ForegroundColor Green
-Add-Content -Path C:\IT\Complete.txt -value "Downloading Teams"
-
-# Install Teams Silently
-Write-host 'Installing Teams' -ForegroundColor Yellow
-Add-AppxPackage -Path $TeamsDLPath
-Write-Host "Teams Installation completed."-ForegroundColor Green
-Add-Content -Path C:\IT\Complete.txt -value "Teams Installation completed"
-
-
-##################################################################################################################################################################
+#################################################################################################################################################################
 
 write-host ''
 Write-Host 'Is this a New User Setup or a replacement computer for an existing User?'

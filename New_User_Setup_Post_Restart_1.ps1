@@ -51,6 +51,23 @@ write-host 'RunOnce Enabled'
 Add-Content -Path C:\IT\Complete.txt -value "RunOnce Enabled"
 
 #############################################################################################
+Write-Host "Launching IE, click "Use Recommended Settings" then Press enter to proceed, This is so the HTTP Request can function"
+# Open Microsoft Edge
+#Start-Process "msedge.exe"
+Start-Process "iexplore.exe"
+Add-Content -Path C:\IT\Complete.txt -value "Edge Launched"
+
+# Wait 10 seconds with countdown display
+for ($i = 30; $i -ge 0; $i--) {
+    Write-Host "$i seconds remaining..." -ForegroundColor Yellow
+    Start-Sleep -Seconds 1
+}
+
+# Close Microsoft Edge
+Get-Process "msedge" | Stop-Process
+Add-Content -Path C:\IT\Complete.txt -value "Edge Terminated"
+
+#############################################################################################
 
 Add-Type -AssemblyName System.Windows.Forms
 
@@ -367,6 +384,9 @@ Add-Content -Path C:\IT\Complete.txt -value "HP Shortcuts removed"
 # Remove directory
 Remove-Item -Path "C:\Program Files\HP\Documentation" -Recurse -Force -ErrorAction SilentlyContinue
 Add-Content -Path C:\IT\Complete.txt -value "HP Directory Shortcuts removed"
+
+#Final Bloatware Check
+Start-Process "appwiz.cpl"
 
 #############################################################################################
 #Final Confirm before restart

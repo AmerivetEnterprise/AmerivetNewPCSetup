@@ -624,26 +624,11 @@ Add-Content -Path C:\IT\Complete.txt -value "NUSPR_2 - Complete"
 
 Write-Host 'Restarting in 30 seconds' -ForegroundColor Red
 Start-Sleep 20
-Write-Host 'Restarting in 10 seconds' -ForegroundColor Red
-Start-Sleep 1
-Write-Host 'Restarting in 9 seconds' -ForegroundColor Red
-Start-Sleep 1
-Write-Host 'Restarting in 8 seconds' -ForegroundColor Red
-Start-Sleep 1
-Write-Host 'Restarting in 7 seconds' -ForegroundColor Red
-Start-Sleep 1
-Write-Host 'Restarting in 6 seconds' -ForegroundColor Red
-Start-Sleep 1
-Write-Host 'Restarting in 5 seconds' -ForegroundColor Red
-Start-Sleep 1
-Write-Host 'Restarting in 4 seconds' -ForegroundColor Red
-Start-Sleep 1
-Write-Host 'Restarting in 3 seconds' -ForegroundColor Red
-Start-Sleep 1
-Write-Host 'Restarting in 2 seconds' -ForegroundColor Red
-Start-Sleep 1
-Write-Host 'Restarting in 1 seconds' -ForegroundColor Red
-Start-Sleep 1
+
+for ($i = 10; $i -gt 0; $i--) {
+    Write-Host "Restarting in $i seconds" -ForegroundColor Red
+    Start-Sleep 1
+}
 
 $formattedTimestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
 Add-Content -Path C:\IT\Complete.txt -value "Restarting: $formattedTimestamp"

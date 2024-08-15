@@ -46,6 +46,31 @@ Add-Content -Path C:\IT\Complete.txt -value "Acquired UPN and capitalized $capit
 
 #################################################################################################
 
+function Test-InternetConnection {
+    try {
+        $response = Test-Connection -ComputerName "www.google.com" -Count 1 -Quiet
+        return $response
+    } catch {
+        return $false
+    }
+}
+
+do {
+    $isConnected = Test-InternetConnection
+
+    if ($isConnected) {
+        Write-Host "The computer is connected to the internet." -ForegroundColor Green
+    } else {
+        Write-Host "The computer is not connected to the internet." -ForegroundColor Red
+        Read-Host -Prompt "Press Enter to check again"
+    }
+} while (-not $isConnected)
+
+# Continue with the rest of your script here
+Write-Host "Continuing with the script..." -ForegroundColor Yellow
+
+#################################################################################################
+
 #Confirms Info.csv file is in place
 $InfoFile = "C:\IT\Info.csv"
 if (Test-Path -path $InfoFile)

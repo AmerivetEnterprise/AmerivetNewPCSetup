@@ -598,12 +598,12 @@ $form.Dispose()
 Rename-Item -Path 'C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE' -NewName "OUTLOOK.EXE.BAK" 
 Write-Host "Renaming C:\Program Files\Microsoft Office\root\Office16\OUTLOOK.EXE to OUTLOOK.EXE.BAK" -foregroundcolor "yellow"
 Write-Host "Rename successful" -foregroundcolor "green"
+write-host ''
 Add-Content -Path C:\IT\Complete.txt -value "Old Outlook DISABLED"
 
 ##################################################################################################################################################
-
 Read-Host "Press Enter to remove from New Scripts Group and Send Password Reset Email to user"
-
+write-host ''
 # Starts New Hire PC Setup Complete v3 Flow
 # https://make.powerautomate.com/environments/Default-c0456220-7d8e-4458-b009-91d710a877d4/flows/shared/4895a808-04ff-479c-a4ce-758996522c1b/details?v3=false
 $PA_URL = "$PA_URL_Complete"
@@ -617,15 +617,18 @@ UPN = $capitalizedUPN
 Invoke-WebRequest -Uri $PA_URL -Method POST -ContentType 'application/json' -Body ($result | ConvertTo-Json -Compress)
 
 ##################################################################################################################################################
-
+write-host ''
 Write-Host "New Hire PC Setup Complete v3 Flow Initiated" -ForegroundColor Green
 Add-Content -Path C:\IT\Complete.txt -value "New Hire PC Setup Complete v3 Flow Initiated"
 Add-Content -Path C:\IT\Complete.txt -value "NUSPR_2 - Complete"
+write-host ''
+[console]::ForeGroundColor = "Red"
+Read-Host 'Press Enter to initiate Restart'
+[console]::ForeGroundColor = "White"
+write-host ''
+Write-Host 'Restarting in 30 seconds, Control C to cancel' -ForegroundColor Red
 
-Write-Host 'Restarting in 30 seconds' -ForegroundColor Red
-Start-Sleep 20
-
-for ($i = 10; $i -gt 0; $i--) {
+for ($i = 30; $i -gt 0; $i--) {
     Write-Host "Restarting in $i seconds" -ForegroundColor Red
     Start-Sleep 1
 }

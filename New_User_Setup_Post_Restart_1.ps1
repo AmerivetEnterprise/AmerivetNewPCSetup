@@ -153,8 +153,6 @@ Get-AppxPackage -allusers Microsoft.549981C3F5F10* | Remove-AppxPackage
 write-host 'Uninstalled Microsoft.549981C3F5F10*'
 Get-AppxPackage -allusers Microsoft.BingWeather* | Remove-AppxPackage
 write-host 'Uninstalled Microsoft.BingWeather*'
-Get-AppxPackage -allusers Microsoft.DesktopAppInstaller* | Remove-AppxPackage
-write-host 'Uninstalled Microsoft.DesktopAppInstaller*'
 Get-AppxPackage -allusers Microsoft.GetHelp* | Remove-AppxPackage
 write-host 'Uninstalled Microsoft.GetHelp*'
 Get-AppxPackage -allusers Microsoft.Getstarted* | Remove-AppxPackage
@@ -370,11 +368,6 @@ Add-Content -Path C:\IT\Complete.txt -value "HP Software removed hopefully"
 #Remove HP Connection Optmizer 
 Start-Process -FilePath "C:\Program Files (x86)\InstallShield Installation Information\{6468C4A5-E47E-405F-B675-A70A70983EA6}\setup.exe" -ArgumentList "-runfromtemp", "-l0x0409", "-removeonly", "/passive" -NoNewWindow -Wait
 Add-Content -Path C:\IT\Complete.txt -value "Connection Optimizer Removed"
-
-#HP doc uninstall 
-# Remove registry key
-Remove-Item -Path "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\HP_Documentation" -Force
-Add-Content -Path C:\IT\Complete.txt -value "HP Doc uninstalled"
 
 # Remove shortcuts
 Remove-Item -Path "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\HP Documentation.lnk" -Force -ErrorAction SilentlyContinue

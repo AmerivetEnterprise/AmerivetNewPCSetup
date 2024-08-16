@@ -6,7 +6,7 @@ $host.UI.RawUI.WindowTitle = "New User Setup Cleanup"
 Write-Host 'Script will continue in 10 seconds'
 Start-Sleep 10
 
-Remove-itemproperty $RunOnceKey "NextRun"
+#Remove-itemproperty $RunOnceKey "NextRun"
 write-warning "Run once has been disabled"
 Add-Content -Path C:\IT\Complete.txt -value "RunOnce Disabled"
 write-host ''

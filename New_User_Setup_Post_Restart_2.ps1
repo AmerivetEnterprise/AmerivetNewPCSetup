@@ -215,7 +215,7 @@ Copy-FileWithProgress -sourcePath "$sourceFileAdobe" -destinationPath "$destinat
 Add-Content -Path C:\IT\Complete.txt -value "Adobe Downloaded from NAS"
 
 # Call the function for HP Support Assistant
-Copy-FileWithProgress -sourcePath :$sourceFileHP" -destinationPath "$destinationFileHP"
+Copy-FileWithProgress -sourcePath "$sourceFileHP" -destinationPath "$destinationFileHP"
 Add-Content -Path C:\IT\Complete.txt -value "HP Support Assistant Downloaded from NAS"
 
 # Call the function for CrowdStrike Download
@@ -333,6 +333,9 @@ try {
 }
 
 ##################################################################################################################################################################
+
+#Start Ninite Installer
+Start-Process -FilePath "C:\IT\Ninite Chrome Firefox Installer.exe" -Wait
 
 start Outlook.exe
 Add-Content -Path C:\IT\Complete.txt -value "Outlook Launched"

@@ -117,8 +117,8 @@ Write-Host "UI Desktop Installed" -foregroundcolor "green"
 Add-Content -Path C:\IT\Complete.txt -value "UID Desktop Software installed"
 
 #Installs Datto for Corp Site
-#Start-process "C:\IT\DattoAgentInstaller.exe"
-#Add-Content -Path C:\IT\Complete.txt -value "Datto RMM Installed"
+Start-process "C:\IT\DattoAgentInstaller.exe"
+Add-Content -Path C:\IT\Complete.txt -value "Datto RMM Installed"
 
 #Set Power Settings 
 Write-Host "Updating Power Settings" -foregroundcolor yellow

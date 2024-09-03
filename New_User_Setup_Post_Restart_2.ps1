@@ -605,14 +605,30 @@ write-host ''
 Add-Content -Path C:\IT\Complete.txt -value "Old Outlook DISABLED"
 
 ##################################################################################################################################################
-Read-Host "Press Enter to remove from New Scripts Group and Send Password Reset Email to user"
+Write-Host "ALL IMAGING SETUP TASK COMPLETE" -ForegroundColor Green
 write-host ''
+Write-Host "Press Enter to initiate the following:" -ForegroundColor Yellow
+write-host ''
+write-host 'Remove from New Scripts Group' -ForegroundColor Cyan
+write-host ''
+Start-sleep 01
+write-host 'Removes TAP' -ForegroundColor Cyan
+write-host ''
+Start-sleep 01
+write-host 'Sends Adobe Sign for employee to sign for computer' -ForegroundColor Cyan
+write-host ''
+write-host '-------------------------------------------' -ForegroundColor Red
+write-host '-------------------------------------------' -ForegroundColor Red
+write-host '-------------------------------------------' -ForegroundColor Red
+Read-Host "Press Enter to Initiate this final process"
+
 # Starts New Hire PC Setup Complete v3 Flow
 # https://make.powerautomate.com/environments/Default-c0456220-7d8e-4458-b009-91d710a877d4/flows/shared/4895a808-04ff-479c-a4ce-758996522c1b/details?v3=false
 $PA_URL = "$PA_URL_Complete"
 $Result = @{
 
 UPN = $capitalizedUPN
+Identifier = $Identifier
 
 }
 

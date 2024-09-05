@@ -336,6 +336,11 @@ try {
 
 #Start Ninite Installer
 Start-Process -FilePath "C:\IT\Ninite Chrome Firefox Installer.exe" -Wait
+Add-Content -Path C:\IT\Complete.txt -Value "Ninite executed"
+
+#Start Logitech Unifer
+Start-Process -FilePath "C:\IT\LogitechUnifyingSoftware.exe" -Wait
+Add-Content -Path C:\IT\Complete.txt -Value "Logi Unifier Installed"
 
 start Outlook.exe
 Add-Content -Path C:\IT\Complete.txt -value "Outlook Launched"
